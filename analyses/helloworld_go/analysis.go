@@ -9,8 +9,8 @@ import (
 func createAnalysis() databench.AnalysisI {
     analysis := new(databench.Analysis)
 
-    analysis.AddListener(&databench.Listener{"test", func(message string) {
-        log.Printf("Listener for test: %s\n", message)
+    analysis.AddListener(&databench.Listener{"connect", func(message interface{}) {
+        log.Printf("Listener for connect: %v\n", message)
     }})
 
     return analysis

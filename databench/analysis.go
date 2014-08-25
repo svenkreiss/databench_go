@@ -6,17 +6,20 @@ import (
 
 type Listener struct {
 	Signal string
-	Callback func(message string)
+	Callback func(message interface{})
 }
 
 type AnalysisI interface {
 	AddListener(*Listener)
-	Emit(string, string)
+	callListener(signal string, message interface{})
+
+	Emit(string, interface{})
+	setEmitFn(func(signal string, message interface{}))
 }
 
 type Analysis struct {
 	listeners []*Listener
-	emit_fn func(signal string, message string)
+	emitFn func(signal string, message interface{})
 }
 
 func (analysis *Analysis) AddListener(l *Listener) {
@@ -25,6 +28,18 @@ func (analysis *Analysis) AddListener(l *Listener) {
 	log.Printf("listeners: %v\n", analysis.listeners)
 }
 
-func (analysis *Analysis) Emit(signal string, message string) {
-	analysis.emit_fn(signal, message)
+func (analysis *Analysis) Emit(signal string, message interface{}) {
+	analysis.emitFn(signal, message)
+}
+
+func (analysis *Analysis) setEmitFn(f func(signal string, message interface{})) {
+	analysis.emitFn = f
+}
+
+func (analysis *Analysis) callListener(signal string, message interface{}) {
+	for _, l := range analysis.listeners {
+		if l.Signal == signal {
+			l.Callback(message)
+		}
+	}
 }
