@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+
+{% block title %}Hello World (Go){% endblock %}
+
+
+{% block content %}
+<p id="output"></p>
+{% endblock %}
+
+
+{% block footerscripts %}
+<script>
+    var databench = Databench('helloworld_go');
+    databench.on('status', function(json) {
+        document.getElementById('output').innerHTML =
+            json.message;
+    });
+</script>
+{% endblock %}

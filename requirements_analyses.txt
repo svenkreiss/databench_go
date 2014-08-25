@@ -1,0 +1,17 @@
+Flask==0.10.1
+Flask-Markdown==0.3
+Flask-Sockets==0.1
+Jinja2==2.7.3
+Markdown==2.4.1
+MarkupSafe==0.23
+Pygments==1.6
+Werkzeug==0.9.6
+gevent==1.0.1
+gevent-websocket==0.9.3
+greenlet==0.4.3
+itsdangerous==0.24
+jinja2-highlight==0.5.1
+pyzmq==14.3.1
+wsgiref==0.1.2
+
+-e git+https://github.com/svenkreiss/databench.git@dev-0.3
