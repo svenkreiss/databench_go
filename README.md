@@ -22,4 +22,4 @@ The `analyses` folder is an example setup and can act as a template for your own
 
 ### Troubleshooting
 
-libzmq: on a Mac, install using `brew install zmq`
+* `libzmq`: on a Mac, install using `brew install zmq`
