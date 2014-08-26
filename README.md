@@ -21,6 +21,8 @@ The `analyses` folder is an example setup and can act as a template for your own
 
     pip install -r requirements_analyses.txt
 
+![helloworld](docs/helloworld.png)
+
 
 ### Troubleshooting
 
