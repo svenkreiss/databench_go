@@ -2,6 +2,10 @@
 
 > [Go](http://golang.org/) language kernel for [Databench](http://www.svenkreiss.com/databench/).
 
+[![GoDoc](https://godoc.org/github.com/svenkreiss/databench_go?status.png)](https://godoc.org/github.com/svenkreiss/databench_go)
+[![Build Status](https://travis-ci.org/svenkreiss/databench_go.png?branch=master)](https://travis-ci.org/svenkreiss/databench_go)
+
+
 Install using
 
     go get github.com/svenkreiss/databench_go

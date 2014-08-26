@@ -8,7 +8,7 @@ import (
 func createAnalysis() AnalysisI {
     analysis := new(Analysis)
 
-    analysis.AddListener(&Listener{"test", func(message string) {
+    analysis.AddListener(&Listener{"test", func(message interface{}) {
         log.Printf("Listener for test: %s\n", message)
     }})
 
@@ -19,5 +19,6 @@ func TestMeta(t *testing.T) {
     log.Printf("Start test\n")
 
     meta := NewMeta("dummypi_go", "Bla bla", createAnalysis)
-    meta.EventLoop()
+    log.Printf("Meta: %v\n", meta)
+    // meta.EventLoop()
 }
