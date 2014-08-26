@@ -9,20 +9,20 @@ import (
 )
 
 
-type ApiPublishOnPort struct {
+type APIPublishOnPort struct {
 	Namespace string `json:"__databench_namespace"`
 	Port int `json:"publish_on_port"`
 }
 
-type ApiMessage struct {
+type APIMessage struct {
 	Signal string `json:"signal"`
 	Message interface{} `json:"message"`
 }
 
-type ApiSignal struct {
+type APISignal struct {
 	Namespace string `json:"__databench_namespace"`
 	AnalysisID int `json:"__analysis_id"`
-	Message ApiMessage `json:"message"`
+	Message APIMessage `json:"message"`
 }
 
 
@@ -59,7 +59,7 @@ func (meta *Meta) emitZmq(analysisID int, signal string, message interface{}) {
 	}
 
 	log.Printf("Sending via zmq: %d, %s -- %v\n", analysisID, signal, message)
-	m := ApiSignal{meta.name, analysisID, ApiMessage{signal, message}}
+	m := APISignal{meta.name, analysisID, APIMessage{signal, message}}
 	msg, _ := json.Marshal(m)
 	log.Printf("Json encoded: %s\n", msg)
 	meta.zmqPublisher.SendBytes(msg, 0)
@@ -80,7 +80,7 @@ func (meta *Meta) EventLoop() {
 		log.Printf("Received: %s\n", msg)
 
 		// try whether this is a signal message
-		signal := new(ApiSignal)
+		signal := new(APISignal)
 		errU2 := json.Unmarshal(msg, signal)
 		if errU2 == nil && signal.Message.Signal != "" {
 			if signal.Namespace != meta.name {
@@ -100,7 +100,7 @@ func (meta *Meta) EventLoop() {
 
 		if meta.zmqPublisher == nil {
 			// try whether it is a PublishOnPort message
-			pop := new(ApiPublishOnPort)
+			pop := new(APIPublishOnPort)
 			errU := json.Unmarshal(msg, pop)
 			if errU == nil && pop.Port != 0 {
 				if pop.Namespace != meta.name {
