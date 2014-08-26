@@ -1,5 +1,3 @@
-os:
- - osx
 language: go
 go:
  - 1.1
@@ -7,7 +5,8 @@ go:
  - release
  - tip
 before_install:
- - brew install zmq
+ - wget https://launchpad.net/ubuntu/+archive/primary/+files/libzmq3_4.0.4%2Bdfsg-2_amd64.deb
+ - sudo dpkg -i libzmq3_4.0.4+dfsg-2_amd64.deb
 install:
  - go get github.com/svenkreiss/databench_go/databench
  - go get -v ./...
