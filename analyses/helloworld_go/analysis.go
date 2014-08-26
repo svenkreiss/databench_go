@@ -6,23 +6,23 @@ import (
 )
 
 type statusMessage struct {
-    Message string
+	Message string
 }
 
 func createAnalysis() databench.AnalysisI {
-    analysis := new(databench.Analysis)
+	analysis := new(databench.Analysis)
 
-    analysis.AddListener(&databench.Listener{"connect", func(message interface{}) {
-        log.Printf("Listener for connect: %v\n", message)
-        analysis.Emit("status", statusMessage{"HelloWorld"})
-    }})
+	analysis.AddListener(&databench.Listener{"connect", func(message interface{}) {
+		log.Printf("Listener for connect: %v\n", message)
+		analysis.Emit("status", statusMessage{"HelloWorld"})
+	}})
 
-    return analysis
+	return analysis
 }
 
 func main() {
 	log.Printf("Starting HelloWorld Go analysis ...\n")
 
-    meta := databench.NewMeta("helloworld_go", "Bla bla", createAnalysis)
-    meta.EventLoop()
+	meta := databench.NewMeta("helloworld_go", "Bla bla", createAnalysis)
+	meta.EventLoop()
 }

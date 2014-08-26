@@ -1,24 +1,24 @@
 package databench
 
 import (
-    "log"
-    "testing"
+	"log"
+	"testing"
 )
 
 func createAnalysis() AnalysisI {
-    analysis := new(Analysis)
+	analysis := new(Analysis)
 
-    analysis.AddListener(&Listener{"test", func(message interface{}) {
-        log.Printf("Listener for test: %s\n", message)
-    }})
+	analysis.AddListener(&Listener{"test", func(message interface{}) {
+		log.Printf("Listener for test: %s\n", message)
+	}})
 
-    return analysis
+	return analysis
 }
 
 func TestMeta(t *testing.T) {
-    log.Printf("Start test\n")
+	log.Printf("Start test\n")
 
-    meta := NewMeta("dummypi_go", "Bla bla", createAnalysis)
-    log.Printf("Meta: %v\n", meta)
-    // meta.EventLoop()
+	meta := NewMeta("dummypi_go", "Bla bla", createAnalysis)
+	log.Printf("Meta: %v\n", meta)
+	// meta.EventLoop()
 }
