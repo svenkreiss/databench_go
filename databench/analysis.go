@@ -14,12 +14,14 @@ type AnalysisI interface {
 	callListener(signal string, message interface{})
 
 	Emit(string, interface{})
-	setEmitFn(func(signal string, message interface{}))
+	setEmitFn(func(id int, signal string, message interface{}))
+	setID(id int)
 }
 
 type Analysis struct {
+	id int
 	listeners []*Listener
-	emitFn func(signal string, message interface{})
+	emitFn func(analysisID int, signal string, message interface{})
 }
 
 func (analysis *Analysis) AddListener(l *Listener) {
@@ -29,11 +31,17 @@ func (analysis *Analysis) AddListener(l *Listener) {
 }
 
 func (analysis *Analysis) Emit(signal string, message interface{}) {
-	analysis.emitFn(signal, message)
+	log.Printf("emit called %s -- %v\n", signal, message)
+	analysis.emitFn(analysis.id, signal, message)
+	log.Printf("---------------------\n")
 }
 
-func (analysis *Analysis) setEmitFn(f func(signal string, message interface{})) {
+func (analysis *Analysis) setEmitFn(f func(int, string, interface{})) {
 	analysis.emitFn = f
+}
+
+func (analysis *Analysis) setID(id int) {
+	analysis.id = id
 }
 
 func (analysis *Analysis) callListener(signal string, message interface{}) {

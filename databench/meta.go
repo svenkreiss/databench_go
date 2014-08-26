@@ -1,7 +1,6 @@
 package databench
 
 import (
-	"os"
 	"log"
 	"time"
 	"strconv"
@@ -27,11 +26,6 @@ type ApiSignal struct {
 }
 
 
-type MetaI interface {
-	EventLoop()
-	emitZmq()
-}
-
 type Meta struct {
 	name string
 	description string
@@ -53,30 +47,31 @@ func NewMeta(name string, description string, analysisCreator func() AnalysisI) 
 func (meta *Meta) instantiateAnalysis(id int) AnalysisI {
 	log.Printf("instantiateAnalysis(%d)\n", id)
 	i := meta.analysisCreator()
+	i.setID(id)
 	meta.analyses[id] = i
 	return i
 }
 
-func (meta *Meta) emitZmq(signal string, message interface{}) {
+func (meta *Meta) emitZmq(analysisID int, signal string, message interface{}) {
 	if meta.zmq_publisher == nil {
 		log.Printf("Cannot send %s -- %v because not ready to publish to zmq.\n", signal, message)
 		return
 	}
 
-	log.Printf("Sending via zmq: %s -- %v\n", signal, message)
-	// meta.zmq_publisher.SendMessage(signal, message)
+	log.Printf("Sending via zmq: %d, %s -- %v\n", analysisID, signal, message)
+	m := ApiSignal{meta.name, analysisID, ApiMessage{signal, message}}
+	msg, _ := json.Marshal(m)
+	log.Printf("Json encoded: %s\n", msg)
+	meta.zmq_publisher.SendBytes(msg, 0)
 }
 
 func (meta *Meta) EventLoop() {
-	name := os.Args[0]
-	log.Printf("EventLoop() for %s.\n", name)
+	log.Printf("EventLoop() for %s.\n", meta.name)
 
 	zmq_subscriber, _ := zmq.NewSocket(zmq.SUB)
 	defer zmq_subscriber.Close()
 	zmq_subscriber.Connect("tcp://127.0.0.1:8041")
 	zmq_subscriber.SetSubscribe("")
-
-	meta.instantiateAnalysis(1)
 
 	for {
 		msg, err := zmq_subscriber.RecvBytes(0)
@@ -88,7 +83,7 @@ func (meta *Meta) EventLoop() {
 		signal := new(ApiSignal)
 		errU2 := json.Unmarshal(msg, signal)
 		if errU2 == nil && signal.Message.Signal != "" {
-			if signal.Namespace != name {
+			if signal.Namespace != meta.name {
 				continue
 			}
 
@@ -108,7 +103,7 @@ func (meta *Meta) EventLoop() {
 			pop := new(ApiPublishOnPort)
 			errU := json.Unmarshal(msg, pop)
 			if errU == nil && pop.Port != 0 {
-				if pop.Namespace != name {
+				if pop.Namespace != meta.name {
 					continue
 				}
 				log.Printf("pop: %v\n", pop)
@@ -121,7 +116,7 @@ func (meta *Meta) EventLoop() {
 				time.Sleep(500 * time.Millisecond)
 
 				// send hello
-				meta.zmq_publisher.Send("{\"__databench_namespace\":\""+name+"\"}", 0)
+				meta.zmq_publisher.Send("{\"__databench_namespace\":\""+meta.name+"\"}", 0)
 				continue
 			}
 		}
