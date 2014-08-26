@@ -7,6 +7,6 @@ go:
 before_install:
  - sudo apt-get update -qq
 install:
- - sudo apt-get install libzmq-dev
+ - sudo apt-get install libzmq3-dev
  - go get github.com/svenkreiss/databench_go/databench
  - go get -v ./...

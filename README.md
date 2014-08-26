@@ -22,4 +22,4 @@ The `analyses` folder is an example setup and can act as a template for your own
 
 ### Troubleshooting
 
-* `libzmq`: on a Mac, install using `brew install zmq`
+* `libzmq`: On a Mac, install using `brew install zmq`. On Ubuntu, use `sudo apt-get install libzmq3-dev` (somehow libzmq3 installs version 4.0.4 ... weird ... but zmq4 is what you want).
