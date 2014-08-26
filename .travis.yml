@@ -7,5 +7,5 @@ go:
 before_install:
  - sudo apt-get update -qq
 install:
- - go get github.com/svenkreiss/databench_go
+ - go get github.com/svenkreiss/databench_go/databench
  - go get -v ./...

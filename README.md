@@ -8,7 +8,7 @@
 
 Install using
 
-    go get github.com/svenkreiss/databench_go
+    go get github.com/svenkreiss/databench_go/databench
 
 and add `github.com/svenkreiss/databench_go/databench` to your imports.
 
