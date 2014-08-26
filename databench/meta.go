@@ -5,7 +5,7 @@ import (
 	"time"
 	"strconv"
 	"encoding/json"
-	zmq "github.com/svenkreiss/zmq4"
+	zmq "github.com/pebbe/zmq4"
 )
 
 

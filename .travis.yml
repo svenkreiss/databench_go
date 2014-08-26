@@ -5,8 +5,7 @@ go:
  - release
  - tip
 before_install:
- - wget https://launchpad.net/ubuntu/+archive/primary/+files/libzmq3_4.0.4%2Bdfsg-2_amd64.deb
- - sudo dpkg -i libzmq3_4.0.4+dfsg-2_amd64.deb
+ - sudo apt-get install -y libzmq3-dev
 install:
  - go get github.com/svenkreiss/databench_go/databench
  - go get -v ./...
