@@ -1,6 +1,6 @@
 # databench_go
 
-> [Go](http://golang.org/) language kernel for [Databench](http://www.svenkreiss.com/databench/).
+> [Go](http://golang.org/) language kernel for [Databench](http://www.svenkreiss.com/databench/). Write your data analysis in Go and visualize and interact with it in the browser.
 
 [![GoDoc](https://godoc.org/github.com/svenkreiss/databench_go/databench?status.png)](https://godoc.org/github.com/svenkreiss/databench_go/databench)
 <!--
