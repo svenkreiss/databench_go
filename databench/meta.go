@@ -32,7 +32,7 @@ type Meta struct {
 	analysisCreator func() AnalysisI
 
 	analyses map[int]AnalysisI
-	zmq_publisher *zmq.Socket
+	zmqPublisher *zmq.Socket
 }
 
 func NewMeta(name string, description string, analysisCreator func() AnalysisI) *Meta {
@@ -53,7 +53,7 @@ func (meta *Meta) instantiateAnalysis(id int) AnalysisI {
 }
 
 func (meta *Meta) emitZmq(analysisID int, signal string, message interface{}) {
-	if meta.zmq_publisher == nil {
+	if meta.zmqPublisher == nil {
 		log.Printf("Cannot send %s -- %v because not ready to publish to zmq.\n", signal, message)
 		return
 	}
@@ -62,19 +62,19 @@ func (meta *Meta) emitZmq(analysisID int, signal string, message interface{}) {
 	m := ApiSignal{meta.name, analysisID, ApiMessage{signal, message}}
 	msg, _ := json.Marshal(m)
 	log.Printf("Json encoded: %s\n", msg)
-	meta.zmq_publisher.SendBytes(msg, 0)
+	meta.zmqPublisher.SendBytes(msg, 0)
 }
 
 func (meta *Meta) EventLoop() {
 	log.Printf("EventLoop() for %s.\n", meta.name)
 
-	zmq_subscriber, _ := zmq.NewSocket(zmq.SUB)
-	defer zmq_subscriber.Close()
-	zmq_subscriber.Connect("tcp://127.0.0.1:8041")
-	zmq_subscriber.SetSubscribe("")
+	zmqSubscriber, _ := zmq.NewSocket(zmq.SUB)
+	defer zmqSubscriber.Close()
+	zmqSubscriber.Connect("tcp://127.0.0.1:8041")
+	zmqSubscriber.SetSubscribe("")
 
 	for {
-		msg, err := zmq_subscriber.RecvBytes(0)
+		msg, err := zmqSubscriber.RecvBytes(0)
 		if err != nil { break }
 
 		log.Printf("Received: %s\n", msg)
@@ -98,7 +98,7 @@ func (meta *Meta) EventLoop() {
 			continue
 		}
 
-		if meta.zmq_publisher == nil {
+		if meta.zmqPublisher == nil {
 			// try whether it is a PublishOnPort message
 			pop := new(ApiPublishOnPort)
 			errU := json.Unmarshal(msg, pop)
@@ -109,14 +109,14 @@ func (meta *Meta) EventLoop() {
 				log.Printf("pop: %v\n", pop)
 
 				log.Printf("Go kernel: Initialize zmq publisher\n")
-				meta.zmq_publisher, _ = zmq.NewSocket(zmq.PUB)
-				meta.zmq_publisher.Bind("tcp://127.0.0.1:"+strconv.Itoa(pop.Port))
+				meta.zmqPublisher, _ = zmq.NewSocket(zmq.PUB)
+				meta.zmqPublisher.Bind("tcp://127.0.0.1:"+strconv.Itoa(pop.Port))
 
 				// wait for slow tcp bind
 				time.Sleep(500 * time.Millisecond)
 
 				// send hello
-				meta.zmq_publisher.Send("{\"__databench_namespace\":\""+meta.name+"\"}", 0)
+				meta.zmqPublisher.Send("{\"__databench_namespace\":\""+meta.name+"\"}", 0)
 				continue
 			}
 		}
