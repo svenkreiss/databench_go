@@ -13,7 +13,6 @@ func createAnalysis() databench.AnalysisI {
 	analysis := new(databench.Analysis)
 
 	analysis.AddListener(&databench.Listener{"connect", func(message interface{}) {
-		log.Printf("Listener for connect: %v\n", message)
 		analysis.Emit("status", statusMessage{"HelloWorld"})
 	}})
 

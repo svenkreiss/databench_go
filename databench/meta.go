@@ -45,7 +45,6 @@ func NewMeta(name string, description string, analysisCreator func() AnalysisI) 
 }
 
 func (meta *Meta) instantiateAnalysis(id int) AnalysisI {
-	log.Printf("instantiateAnalysis(%d)\n", id)
 	i := meta.analysisCreator()
 	i.setID(id)
 	meta.analyses[id] = i
@@ -61,7 +60,7 @@ func (meta *Meta) emitZmq(analysisID int, signal string, message interface{}) {
 	log.Printf("Sending via zmq: %d, %s -- %v\n", analysisID, signal, message)
 	m := APISignal{meta.name, analysisID, APIMessage{signal, message}}
 	msg, _ := json.Marshal(m)
-	log.Printf("Json encoded: %s\n", msg)
+	// log.Printf("Json encoded: %s\n", msg)
 	meta.zmqPublisher.SendBytes(msg, 0)
 }
 
@@ -92,7 +91,6 @@ func (meta *Meta) EventLoop() {
 				i := meta.instantiateAnalysis(signal.AnalysisID)
 				i.setEmitFn(meta.emitZmq)
 			}
-			log.Printf("signal: %v\n", signal)
 			meta.analyses[signal.AnalysisID].callListener(signal.Message.Signal, signal.Message.Message)
 
 			continue

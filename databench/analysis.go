@@ -1,7 +1,6 @@
 package databench
 
 import (
-	"log"
 )
 
 type Listener struct {
@@ -25,15 +24,11 @@ type Analysis struct {
 }
 
 func (analysis *Analysis) AddListener(l *Listener) {
-	log.Printf("AddListener()\n")
 	analysis.listeners = append(analysis.listeners, l)
-	log.Printf("listeners: %v\n", analysis.listeners)
 }
 
 func (analysis *Analysis) Emit(signal string, message interface{}) {
-	log.Printf("emit called %s -- %v\n", signal, message)
 	analysis.emitFn(analysis.id, signal, message)
-	log.Printf("---------------------\n")
 }
 
 func (analysis *Analysis) setEmitFn(f func(int, string, interface{})) {
